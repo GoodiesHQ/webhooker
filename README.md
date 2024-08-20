@@ -1,7 +1,7 @@
 # webhooker
 webhook -> webhook(s)
 
-This repository is an incredibly soimple webhook proxy/forwarder. It addresses two issues I ran into using various clients that support webhook notifications:
+This repository is an incredibly simple webhook proxy and forwarder. It addresses two issues I ran into using various clients that support webhook notifications:
 
 
 1) What if I want to take one event and send it to multiple webhooks?
