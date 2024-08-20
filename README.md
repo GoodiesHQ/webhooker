@@ -4,10 +4,10 @@ webhook -> webhook(s)
 This repository is an incredibly simple webhook proxy and forwarder. It addresses two issues I ran into using various clients that support webhook notifications:
 
 
-1) What if I want to take one event and send it to multiple webhooks?
-2) What if the webhook URL provided by the application contains invalid characters?
+1) What if I want to take one event and send it to multiple webhooks at once without implementing multiple notification profiles?
+2) What if the webhook URL provided by the target contains characters the client can't process (?, %, etc...)?
 
-Enter WebHooker... the configuration is simple:
+Enter WebHooker... the configuration is simple. Set a name (endpoint URL, case sensitive) and set your targets.
 
 ```yaml
 webhooks:
@@ -25,7 +25,7 @@ it will receive all of the post and query data, rebuild the request, and send it
 
 
 #### webhooker is not smart
-It just forwards the requests. Only in the logs can you determine if the webhook was successful. Otherwise, it will simply always respond with 200 OK no matter what.
+It just forwards the requests. The same query parameters, the same post data, the same request headers. Only in the logs can you determine if the webhook was successful to the targets. The client side currently has no visibility to that. Otherwise, it will simply always respond with 200 OK no matter what.
 
 ## Responses:
 
