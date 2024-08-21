@@ -1,0 +1,9 @@
+services:
+  webhooker:
+    image: goodieshq/webhooker:latest
+    container_name: webhooker
+    ports:
+      - 7373:7373
+    volumes:
+      - ./webhooker.yml:/app/webhooker.yml:ro
+      - ./ssl:/ssl
