@@ -3,13 +3,9 @@ FROM golang:1.23-alpine AS build
 WORKDIR /build
 
 # copy source code
-RUN ls
 COPY ./cmd/ ./cmd/
-RUN ls
 COPY ./go.mod ./
-RUN ls
 COPY ./go.sum ./
-RUN ls
 
 # build the executable
 RUN go build -o webhooker ./cmd
