@@ -3,6 +3,7 @@ package main
 import (
 	"net/url"
 	"os"
+	"strings"
 
 	"github.com/rs/zerolog/log"
 	"gopkg.in/yaml.v3"
@@ -51,6 +52,7 @@ func LoadConfig(filename string) *Config {
 	for _, webhook := range config.Webhooks {
 		// create a list of valid targets
 		validTargets := []string{}
+		webhook.Name = strings.TrimLeft(webhook.Name, "/")
 
 		for _, target := range webhook.Targets {
 			// parse each target to ensure it is a valid URL
