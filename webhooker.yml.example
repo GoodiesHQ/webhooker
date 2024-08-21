@@ -1,0 +1,11 @@
+listen:
+  port: 8080
+  ssl:
+    key: "/ssl/wildcard_key.pem" # path to the SSL private key
+    crt: "/ssl/wildcard_crt.pem" # path to the SSL certificate
+webhooks:
+  - name: /example/f4b72c0c-e598-4ace-b96c-627b195536e8
+    targets:
+      - https://example.com/webhooks/a
+      - https://example.com/webhooks/b
+      - https://example.com/webhooks/c
