@@ -38,6 +38,12 @@ func main() {
 	// load the configuration file
 	cfg := LoadConfig(cfgPath)
 
+	if cfg.Debug {
+		zerolog.SetGlobalLevel(zerolog.DebugLevel)
+	} else {
+		zerolog.SetGlobalLevel(zerolog.InfoLevel)
+	}
+
 	// simple mux router
 	mux := http.NewServeMux()
 

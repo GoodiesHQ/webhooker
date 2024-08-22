@@ -35,7 +35,7 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 
 	if targets == nil {
 		// name is not found in the configuration
-		log.Info().Str("name", name).Msg("name not found")
+		log.Warn().Str("name", name).Msg("webhook name not found")
 
 		respond(w, http.StatusNotFound, nil)
 		return
@@ -51,6 +51,8 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	log.Debug().Str("body", string(body)).Msg("received body")
+
 	// perform the webhooks to the backend targets in the background
 	for _, target := range targets {
 		go sendWebhook(name, target, r.Header, body)
@@ -61,7 +63,6 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleDefault(w http.ResponseWriter, r *http.Request) {
-	log.Info().Msg("default")
 	respond(w, http.StatusMethodNotAllowed, nil)
 }
 
@@ -74,7 +75,12 @@ func sendWebhook(name, targetUrl string, headers http.Header, body []byte) {
 		return
 	}
 
-	log = log.With().Str("target", target.Hostname()).Logger()
+	// include the backend webhook hostname
+	if log.Debug().Enabled() {
+		log = log.With().Str("target", target.String()).Logger()
+	} else {
+		log = log.With().Str("target", target.Hostname()).Logger()
+	}
 
 	req, err := http.NewRequest(http.MethodPost, targetUrl, bytes.NewReader(body))
 	if err != nil {
@@ -88,10 +94,16 @@ func sendWebhook(name, targetUrl string, headers http.Header, body []byte) {
 	res, err := client.Do(req)
 	if err != nil {
 		log.Error().Err(err).Msg("failed to perform client request")
+		return
 	}
 
-	body, _ = io.ReadAll(res.Body)
-	log.Info().Str("status", res.Status).Str("body", string(body)).Msg("target responded")
+	body, err = io.ReadAll(res.Body)
+	if err != nil {
+		log.Error().Err(err).Msg("failed to read response")
+		return
+	}
+
+	log.Info().Str("status", res.Status).Str("body", string(body)).Int("response_size", len(body)).Msg("target responded")
 }
 
 func respond(w http.ResponseWriter, statusCode int, data []byte) {
